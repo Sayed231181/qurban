@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PESERTA QURBAN SUNNAH</title>
+<style>
+:root{--bg:#f6f4ee;--card:#fff;--tx:#1d2a22;--mu:#66736b;--pr:#1f7a4d;--pr2:#e3f2ea;--bd:#e1ddd0;--rd:#b3261e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121815;--card:#1b241f;--tx:#e8efe9;--mu:#9aa89f;--pr:#4cc388;--pr2:#1f3a2c;--bd:#2c3a32;--rd:#ff8a80}}
+:root[data-theme="dark"]{--bg:#121815;--card:#1b241f;--tx:#e8efe9;--mu:#9aa89f;--pr:#4cc388;--pr2:#1f3a2c;--bd:#2c3a32;--rd:#ff8a80}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#app{max-width:520px;margin:0 auto;padding:14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+h1{font-size:20px;margin:0 0 2px}h2{font-size:16px;margin:0 0 10px}
+.mu{color:var(--mu);font-size:13px}
+input{width:100%;padding:11px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit;margin:4px 0 10px}
+button{padding:10px 14px;border:0;border-radius:10px;background:var(--pr);color:#fff;font:inherit;font-weight:600;cursor:pointer;width:100%}
+button.s{background:var(--pr2);color:var(--pr)}
+.bar{height:8px;background:var(--pr2);border-radius:6px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:var(--pr)}
+.big{font-size:30px;font-weight:700;color:var(--pr)}
+.it{padding:10px 0;border-top:1px solid var(--bd)}.it:first-child{border-top:0}
+.err{color:var(--rd);font-size:13px;min-height:18px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script id="seed" type="application/json">{"updated":1795505405127,"members":[{"id":"m01","nama":"M. Irham","target":0,"trx":[]},{"id":"m02","nama":"Sayed","target":0,"trx":[]},{"id":"m03","nama":"Mahmudi","target":0,"trx":[]},{"id":"m04","nama":"Ihwan","target":0,"trx":[]},{"id":"m05","nama":"Raka","target":0,"trx":[]},{"id":"m06","nama":"Aidil","target":0,"trx":[]},{"id":"m07","nama":"Agustiar","target":0,"trx":[]},{"id":"m08","nama":"Siti Nadia","target":0,"trx":[]},{"id":"m09","nama":"Zulfanda","target":0,"trx":[]},{"id":"m10","nama":"Jailani","target":0,"trx":[]},{"id":"m11","nama":"Amri","target":0,"trx":[]},{"id":"m12","nama":"Fachra","target":0,"trx":[]},{"id":"m13","nama":"Darul","target":0,"trx":[]},{"id":"m14","nama":"Rhani Yulianto","target":0,"trx":[]},{"id":"m15","nama":"Bahrul","target":0,"trx":[]},{"id":"m16","nama":"Azhar","target":0,"trx":[]},{"id":"m17","nama":"Hasrul","target":0,"trx":[]}]}</script>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rp=n=>'Rp '+Math.round(n||0).toLocaleString('id-ID');
+const fd=d=>{const[y,m,t]=String(d).split('-');return t?`${t}/${m}/${y}`:d};
+const S=JSON.parse($('#seed').textContent);
+const saldo=m=>m.trx.reduce((a,t)=>a+t.j,0);
+const upd=()=>S.updated?new Date(S.updated).toLocaleString('id-ID',{dateStyle:'long',timeStyle:'short'}):'-';
+let me=null,msg='';
+function render(){
+  const a=$('#app');
+  if(!me){
+    a.innerHTML=`<div class="card"><h1>🐑 PESERTA QURBAN SUNNAH</h1><div class="mu">Masukkan nama Anda untuk melihat saldo</div></div>
+    <div class="card"><label class="mu">Nama Peserta</label><input id="nm" placeholder="Ketik nama sesuai daftar" autocomplete="off" onkeydown="if(event.key=='Enter')go()"><button onclick="go()">Masuk</button><div class="err">${esc(msg)}</div><div class="mu" style="text-align:center">🕒 Data terakhir diperbarui admin: ${upd()}</div></div>`;
+    return;
+  }
+  const m=me,s=saldo(m),p=m.target>0?Math.min(100,s/m.target*100):0;
+  a.innerHTML=`<div class="card"><h1>${esc(m.nama)}</h1><div class="mu">PESERTA QURBAN SUNNAH</div></div>
+  <div class="card"><div class="mu">Saldo Anda</div><div class="big">${rp(s)}</div>
+  ${m.target>0?`<div class="bar"><i style="width:${p}%"></i></div><div class="mu">${p.toFixed(0)}% dari target ${rp(m.target)} · kurang ${rp(Math.max(0,m.target-s))}</div>`:''}</div>
+  <div class="card"><h2>Riwayat Transaksi</h2>${m.trx.length?[...m.trx].sort((x,y)=>y.d.localeCompare(x.d)).map(t=>`<div class="it"><b style="color:${t.j<0?'var(--rd)':'var(--pr)'}">${t.j<0?'Debit − ':'Kredit + '}${rp(Math.abs(t.j))}</b><div class="mu">${fd(t.d)}${t.n?' · '+esc(t.n):''}</div></div>`).join(''):'<div class="mu">Belum ada transaksi.</div>'}</div>
+  <button class="s" onclick="me=null;msg='';render()">Keluar</button>
+  <div class="mu" style="text-align:center;margin-top:10px">🕒 Data terakhir diperbarui admin:<br>${upd()}</div>`;
+}
+function go(){const v=$('#nm').value.trim().toLowerCase().replace(/\s+/g,' ');
+  const m=S.members.find(x=>x.nama.trim().toLowerCase().replace(/\s+/g,' ')==v);
+  if(!m){msg='Nama tidak ditemukan. Hubungi pengurus.';return render()}me=m;msg='';render()}
+render();
+</script>
+</body>
+</html>
