@@ -1,8 +1,8 @@
 {
  "name": "Admin Qurban Sunnah",
  "short_name": "Admin Qurban",
- "start_url": "admin-github.html",
- "scope": "admin-github.html",
+ "start_url": "./",
+ "scope": "./",
  "display": "standalone",
  "background_color": "#f6f4ee",
  "theme_color": "#14513a",
@@ -20,5 +20,5 @@
    "purpose": "any maskable"
   }
  ],
- "id": "admin-github.html"
+ "id": "adm-qurban"
 }
