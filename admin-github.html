@@ -91,7 +91,7 @@ function renderA(a){
   ${dirty()?'<div class="err" style="margin-top:8px">⚠ Data tersimpan di HP ini. Setelah selesai: Cadangkan, lalu Buat File Peserta.</div>':''}
   <div class="row" style="margin-top:8px"><button onclick="$('#xf').click()">📥 Impor Excel</button><button class="s" onclick="pdfRekap()">📄 PDF Rekap</button></div><div class="row" style="margin-top:8px"><button onclick="mkPeserta()">📤 Buat File Peserta</button><button class="s" onclick="bak()">💾 Cadangkan</button><button class="s" onclick="$('#rf').click()">♻ Pulihkan</button></div><input id="rf" type="file" accept=".json" hidden onchange="rest(this.files[0])">
   <input id="xf" type="file" accept=".xlsx,.xls,.csv" hidden onchange="imp(this.files[0])">
-  <div class="mu" style="margin-top:6px">Kolom Excel: <b>Nama, HP, Target, Saldo</b> (Saldo = saldo awal). ${esc(msg)}</div></div>
+  <div class="mu" style="margin-top:6px">Excel: format tabungan (2 baris per peserta) atau kolom <b>Nama, HP, Target, Saldo</b>. ${esc(msg)}</div></div>
   <div class="card"><h2>Input Pemasukan</h2>
   <select id="ps"><option value="">— Pilih peserta —</option>${opts}</select>
   <div class="row"><input id="tg" type="date" value="${today()}"><input id="jm" type="number" inputmode="numeric" placeholder="Jumlah (Rp)"></div>
@@ -109,16 +109,37 @@ function addT(){const id=$('#ps').value,j=Math.abs(+$('#jm').value)*(+$('#jn').v
 function delT(m,t){if(!confirm('Hapus setoran ini?'))return;const x=S.members.find(a=>a.id==m);x.trx=x.trx.filter(a=>a.id!=t);save();render()}
 function addM(){const n=$('#nn').value.trim();if(!n)return;S.members.push({id:uid(),nama:n,hp:'',target:+$('#nt').value||0,trx:[]});save();render()}
 function setHp(id,v){S.members.find(m=>m.id==id).hp=v.trim();save()}
+const str=v=>String(v==null?'':v).trim();
+function parseLayout(A,hdr){
+  const iso=s=>new Date(Math.round((s-25569)*864e5)).toISOString().slice(0,10);
+  const list=[];
+  for(let i=hdr+1;i<A.length;i++){const r=A[i],nama=str(r[1]);if(typeof r[0]!='number'||!nama)continue;
+    const b=A[i+1]||[],trx=[],sa=+b[2]||0;
+    if(sa>0)trx.push({id:uid(),d:'2026-06-01',j:sa,n:'Saldo awal (Dana 2025/2026)'});
+    for(let c=3;c<=14;c++){const d=r[c],x=+b[c]||0;if(typeof d=='number'&&x)trx.push({id:uid(),d:iso(d),j:x,n:''})}
+    list.push({nama,trx})}
+  return list}
 async function imp(f){if(!f)return;
-  try{const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
+  try{if(typeof XLSX=='undefined'){msg='Pustaka Excel belum termuat. Periksa internet lalu muat ulang.';return render()}
+    const wb=XLSX.read(await f.arrayBuffer(),{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]];
+    const A=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:true});
+    const hdr=A.findIndex(r=>r.some(c=>/nama\s*anggota/i.test(str(c))));
+    if(hdr>=0){const list=parseLayout(A,hdr);
+      if(!list.length){msg='Tidak ada peserta terbaca di Excel.';return render()}
+      if(!confirm('Ditemukan '+list.length+' peserta. Transaksi peserta ini akan DIGANTI sesuai Excel. Lanjutkan?'))return;
+      let n=0,u=0;
+      list.forEach(x=>{const m=S.members.find(y=>y.nama.trim().toLowerCase()==x.nama.toLowerCase());
+        if(m){m.trx=x.trx;u++}else{S.members.push({id:uid(),nama:x.nama,hp:'',target:0,trx:x.trx});n++}});
+      msg='Impor: '+n+' baru, '+u+' diperbarui.';save();return render()}
+    const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
     const g=(r,k)=>{for(const c in r)if(c.trim().toLowerCase()==k)return r[c];return ''};
     let n=0,u=0;
-    rows.forEach(r=>{const nama=String(g(r,'nama')).trim();if(!nama)return;
-      const hp=String(g(r,'hp')||g(r,'no hp')||g(r,'wa')).trim(),tg=+String(g(r,'target')).replace(/\D/g,'')||0,sa=+String(g(r,'saldo')).replace(/\D/g,'')||0;
+    rows.forEach(r=>{const nama=str(g(r,'nama'));if(!nama)return;
+      const hp=str(g(r,'hp')||g(r,'no hp')||g(r,'wa')),tg=+String(g(r,'target')).replace(/\D/g,'')||0,sa=+String(g(r,'saldo')).replace(/\D/g,'')||0;
       let m=S.members.find(x=>x.nama.trim().toLowerCase()==nama.toLowerCase());
       if(m){if(hp)m.hp=hp;if(tg)m.target=tg;u++}
       else{m={id:uid(),nama,hp,target:tg,trx:[]};if(sa>0)m.trx.push({id:uid(),d:today(),j:sa,n:'Saldo awal'});S.members.push(m);n++}});
-    msg=`Impor: ${n} baru, ${u} diperbarui.`;save();render()}catch(e){msg='Gagal membaca file Excel.';render()}}
+    msg='Impor: '+n+' baru, '+u+' diperbarui.';save();render()}catch(e){msg='Gagal membaca file Excel: '+(e&&e.message||e);render()}}
 
 function dlFile(name,data,type){const b=new Blob([data],{type});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove()}
 function bak(){dlFile('Cadangan-Qurban-'+today()+'.json',JSON.stringify(S),'application/json');msg='Cadangan diunduh. Simpan di tempat aman, jangan dibagikan.';render()}
