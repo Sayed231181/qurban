@@ -207,7 +207,7 @@ function pdfRekap(){const {jsPDF}=window.jspdf;const doc=new jsPDF();
   doc.autoTable({startY:30,head:[['No','Nama','Target','Saldo','%']],body:rows,foot:[['','Total','',rp(S.members.reduce((s,m)=>s+saldo(m),0)),'']],headStyles:{fillColor:[31,122,77]},footStyles:{fillColor:[227,242,234],textColor:20}});
   dl(doc,'Rekap-Qurban.pdf')}
 render();
-if('serviceWorker' in navigator)navigator.serviceWorker.register('admin-sw.js').catch(()=>{});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
 </html>
