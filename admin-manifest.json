@@ -2,7 +2,7 @@
  "name": "Admin Qurban Sunnah",
  "short_name": "Admin Qurban",
  "start_url": "admin-github.html",
- "scope": "./",
+ "scope": "admin-github.html",
  "display": "standalone",
  "background_color": "#f6f4ee",
  "theme_color": "#14513a",
