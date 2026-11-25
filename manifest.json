@@ -1,6 +1,6 @@
 {
- "name": "Peserta Qurban Sunnah",
- "short_name": "Qurban",
+ "name": "Bank Qurban Sunnah - Nasabah",
+ "short_name": "Bank Qurban",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
