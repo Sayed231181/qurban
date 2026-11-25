@@ -1,6 +1,6 @@
 {
- "name": "Bank Qurban Sunnah - Nasabah",
- "short_name": "Bank Qurban",
+ "name": "TABUNGAN BQS",
+ "short_name": "TABUNGAN BQS",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
