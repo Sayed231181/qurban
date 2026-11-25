@@ -67,7 +67,7 @@ function tick(){const n=new Date(),set=(i,v)=>{const e=document.getElementById(i
   set('hj',hijri(n));set('ms',n.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'}));set('jm2',n.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'}))}
 setInterval(tick,1000);
 const yearSel=()=>`<select id="yr" onchange="Y=+this.value;render()">${[2026,2027,2028,2029,2030,2031].map(y=>`<option ${y==Y?'selected':''}>${y}</option>`).join('')}</select>`;
-const LG=`<img src="logo.png" class="logo2" alt=""><div class="bqs">BANK QURBAN SYARIAH</div>`;
+const LG=`<img src="logo.png" class="logo2" alt="">`;
 const head=(sub,right)=>`<div class="hd"><div class="hl">${yearSel()}<div class="hj" id="hj"></div><div class="ms" id="ms"></div><div class="ms" id="jm2"></div>${sub=='ADMIN'?LG:''}</div><div class="hr">${sub=='ADMIN'?'':LG}${right||''}</div></div><h1 class="tt">BANK QURBAN SUNNAH</h1><div class="sub">(${sub})</div>`;
 let me=null,msg='';
 function render(){const a=$('#app');

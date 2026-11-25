@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BANK QURBAN SUNNAH - NASABAH</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#1f7a4d"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#f6f4ee;--card:#fff;--tx:#1d2a22;--mu:#66736b;--pr:#1f7a4d;--pr2:#e3f2ea;--bd:#e1ddd0;--rd:#b3261e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121815;--card:#1b241f;--tx:#e8efe9;--mu:#9aa89f;--pr:#4cc388;--pr2:#1f3a2c;--bd:#2c3a32;--rd:#ff8a80}}
+:root[data-theme="dark"]{--bg:#121815;--card:#1b241f;--tx:#e8efe9;--mu:#9aa89f;--pr:#4cc388;--pr2:#1f3a2c;--bd:#2c3a32;--rd:#ff8a80}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#app{max-width:520px;margin:0 auto;padding:14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+h1{font-size:20px;margin:0 0 2px}h2{font-size:16px;margin:0 0 10px}
+.mu{color:var(--mu);font-size:13px}
+input{width:100%;padding:11px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit;margin:4px 0 10px}
+button{padding:10px 14px;border:0;border-radius:10px;background:var(--pr);color:#fff;font:inherit;font-weight:600;cursor:pointer;width:100%}
+button.s{background:var(--pr2);color:var(--pr)}
+.bar{height:8px;background:var(--pr2);border-radius:6px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:var(--pr)}
+.big{font-size:30px;font-weight:700;color:var(--pr)}
+.it{padding:10px 0;border-top:1px solid var(--bd)}.it:first-child{border-top:0}
+.err{color:var(--rd);font-size:13px;min-height:18px}
+
+#app{text-align:center;max-width:560px}
+.hd{display:grid;grid-template-columns:1fr 136px;gap:8px;align-items:start;margin-bottom:4px}
+.hl{display:flex;flex-direction:column;gap:6px;align-items:center;padding-top:4px}
+.hl select{width:auto;min-width:96px;margin:0;text-align:center}
+.hj{font-size:16px;font-weight:700}.ms{font-size:14px;color:var(--mu)}
+.hr{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.logo{width:100%;height:auto;display:block}
+.tt{font-size:22px;margin:6px 0 0;text-align:center}
+.sub{font-size:15px;font-weight:700;color:var(--pr);margin-bottom:10px;text-align:center}
+.tot{border:1px solid var(--bd);border-radius:12px;padding:8px 4px;background:var(--pr2);font-size:12px}
+.tot b{font-size:20px;display:block;color:var(--pr)}
+.it{text-align:left}
+.logo2{width:min(100%,170px);height:auto;display:block;margin:6px auto 0;border-radius:14px}
+.bqs{font-size:25px;font-weight:800;color:var(--pr);line-height:1.1;text-align:center;margin-top:6px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script id="seed" type="application/json">{"updated":0,"members":[]}</script>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rp=n=>'Rp '+Math.round(n||0).toLocaleString('id-ID');
+const fd=d=>{const[y,m,t]=String(d).split('-');return t?`${t}/${m}/${y}`:d};
+let S=JSON.parse($('#seed').textContent);
+const upd=()=>S.updated?new Date(S.updated).toLocaleString('id-ID',{dateStyle:'long',timeStyle:'short'}):'-';
+
+const hparts=d=>{const p=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',year:'numeric'}).formatToParts(d);const g=t=>+p.find(x=>x.type==t).value;return{d:g('day'),m:g('month'),y:g('year')}};
+const _pe={};
+function periodEnd(y){if(_pe[y])return _pe[y];
+  for(let t=Date.UTC(y+1,0,1,12);t<Date.UTC(y+2,0,1,12);t+=864e5){const a=hparts(new Date(t)),b=hparts(new Date(t+864e5));if(a.m==11&&b.m==12)return _pe[y]=new Date(t).toISOString().slice(0,10)}
+  return _pe[y]=(y+1)+'-05-01'}
+const cutLabel=y=>{const a=hparts(new Date(periodEnd(y)+'T12:00:00Z'));return a.d+' Zulkaidah '+a.y+' H'};
+let Y=2031;for(let y=2026;y<=2031;y++){if(new Date().toISOString().slice(0,10)<=periodEnd(y)){Y=y;break}}
+const saldoY=(m,y=Y)=>m.trx.reduce((a,t)=>t.d<=periodEnd(y)?a+t.j:a,0);
+const trxY=(m,y=Y)=>m.trx.filter(t=>t.d>periodEnd(y-1)&&t.d<=periodEnd(y));
+const pctY=m=>m.target>0?Math.min(100,saldoY(m)/m.target*100):0;
+const HM=['Muharram','Safar','Rabiul Awal','Rabiul Akhir','Jumadil Awal','Jumadil Akhir','Rajab','Syaban','Ramadan','Syawal','Zulkaidah','Zulhijah'];
+function hijri(d){try{const p=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',year:'numeric'}).formatToParts(d);const g=t=>+p.find(x=>x.type==t).value;return g('day')+' '+HM[g('month')-1]+' '+g('year')+' H'}catch(e){return ''}}
+function tick(){const n=new Date(),set=(i,v)=>{const e=document.getElementById(i);if(e&&e.textContent!==v)e.textContent=v};
+  set('hj',hijri(n));set('ms',n.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'}));set('jm2',n.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'}))}
+setInterval(tick,1000);
+const yearSel=()=>`<select id="yr" onchange="Y=+this.value;render()">${[2026,2027,2028,2029,2030,2031].map(y=>`<option ${y==Y?'selected':''}>${y}</option>`).join('')}</select>`;
+const LG=`<img src="logo.png" class="logo2" alt="">`;
+const head=(sub,right)=>`<div class="hd"><div class="hl">${yearSel()}<div class="hj" id="hj"></div><div class="ms" id="ms"></div><div class="ms" id="jm2"></div>${sub=='ADMIN'?LG:''}</div><div class="hr">${sub=='ADMIN'?'':LG}${right||''}</div></div><h1 class="tt">BANK QURBAN SUNNAH</h1><div class="sub">(${sub})</div>`;
+let me=null,msg='';
+function render(){const a=$('#app');
+  if(!me){a.innerHTML=head('NASABAH')+`<div class="card"><label class="mu">Nama Nasabah</label><input id="nm" placeholder="Ketik nama sesuai daftar" autocomplete="off" style="text-align:center" onkeydown="if(event.key=='Enter')go()"><button onclick="go()">Masuk</button><div class="err">${esc(msg)}</div><div class="mu">🕒 Data terakhir diperbarui admin: ${upd()}</div></div>`;tick();return}
+  const m=me,s=saldoY(m),p=pctY(m),L=trxY(m);
+  a.innerHTML=head('NASABAH')+`<div class="card"><h1 style="text-align:center;margin:0">${esc(m.nama)}</h1></div>
+  <div class="card"><div class="mu">Saldo s.d. ${cutLabel(Y)}</div><div class="big">${rp(s)}</div>${(saldoY(m,Y-1)||Y>2026)?`<div class="mu">Saldo bawaan dari periode sebelumnya: ${rp(saldoY(m,Y-1))}</div>`:''}${m.target>0?`<div class="bar"><i style="width:${p}%"></i></div><div class="mu">${p.toFixed(0)}% dari target ${rp(m.target)} · kurang ${rp(Math.max(0,m.target-s))}</div>`:''}</div>
+  <div class="card"><h2>Riwayat Transaksi Periode ${Y}</h2>${L.length?[...L].sort((x,y)=>y.d.localeCompare(x.d)).map(t=>`<div class="it"><div><b style="color:${t.j<0?'var(--rd)':'var(--pr)'}">${t.j<0?'Debit − ':'Kredit + '}${rp(Math.abs(t.j))}</b><div class="mu">${fd(t.d)}${t.n?' · '+esc(t.n):''}</div></div></div>`).join(''):'<div class="mu">Belum ada transaksi pada periode ini.</div>'}</div>
+  <button class="s" onclick="me=null;msg='';render()">Keluar</button><div class="mu" style="margin-top:10px">🕒 Data terakhir diperbarui admin:<br>${upd()}</div>`;tick()}
+function go(){const v=$('#nm').value.trim().toLowerCase().replace(/\s+/g,' ');
+  const m=S.members.find(x=>x.nama.trim().toLowerCase().replace(/\s+/g,' ')==v);
+  if(!m){msg='Nama tidak ditemukan. Hubungi pengurus.';return render()}me=m;msg='';render()}
+render();
+fetch('data.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{if(d&&Array.isArray(d.members)&&d.members.length&&(d.updated||0)>=S.updated){S=d;if(!me)render()}}).catch(()=>{});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
