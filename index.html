@@ -36,6 +36,8 @@ button.s{background:var(--pr2);color:var(--pr)}
 .tot{border:1px solid var(--bd);border-radius:12px;padding:8px 4px;background:var(--pr2);font-size:12px}
 .tot b{font-size:20px;display:block;color:var(--pr)}
 .it{text-align:left}
+.logo2{width:min(100%,170px);height:auto;display:block;margin:6px auto 0;border-radius:14px}
+.bqs{font-size:25px;font-weight:800;color:var(--pr);line-height:1.1;text-align:center;margin-top:6px}
 </style>
 </head>
 <body>
@@ -65,7 +67,8 @@ function tick(){const n=new Date(),set=(i,v)=>{const e=document.getElementById(i
   set('hj',hijri(n));set('ms',n.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'}));set('jm2',n.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'}))}
 setInterval(tick,1000);
 const yearSel=()=>`<select id="yr" onchange="Y=+this.value;render()">${[2026,2027,2028,2029,2030,2031].map(y=>`<option ${y==Y?'selected':''}>${y}</option>`).join('')}</select>`;
-const head=(sub,right)=>`<div class="hd"><div class="hl">${yearSel()}<div class="hj" id="hj"></div><div class="ms" id="ms"></div><div class="ms" id="jm2"></div></div><div class="hr"><img src="logo.png" class="logo" alt="">${right||''}</div></div><h1 class="tt">BANK QURBAN SUNNAH</h1><div class="sub">(${sub})</div>`;
+const LG=`<img src="logo.png" class="logo2" alt=""><div class="bqs">BANK QURBAN SYARIAH</div>`;
+const head=(sub,right)=>`<div class="hd"><div class="hl">${yearSel()}<div class="hj" id="hj"></div><div class="ms" id="ms"></div><div class="ms" id="jm2"></div>${sub=='ADMIN'?LG:''}</div><div class="hr">${sub=='ADMIN'?'':LG}${right||''}</div></div><h1 class="tt">BANK QURBAN SUNNAH</h1><div class="sub">(${sub})</div>`;
 let me=null,msg='';
 function render(){const a=$('#app');
   if(!me){a.innerHTML=head('NASABAH')+`<div class="card"><label class="mu">Nama Nasabah</label><input id="nm" placeholder="Ketik nama sesuai daftar" autocomplete="off" style="text-align:center" onkeydown="if(event.key=='Enter')go()"><button onclick="go()">Masuk</button><div class="err">${esc(msg)}</div><div class="mu">🕒 Data terakhir diperbarui admin: ${upd()}</div></div>`;tick();return}
